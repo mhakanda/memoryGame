@@ -1,13 +1,17 @@
 #container1 {
     display: flex;
     justify-content: space-between;
+    /*border: solid;*/
 }
-.box0 .box1 .box2 .box3 .box4 .box5 .box6 .box7 .box8 .box9 .box10{
+/*div{
+  border: solid;
+}*/
+.box0 .box1 .box2 .box3 .box4 .box5 {
   width: 150px;
   height: 150px;
   background: red;
 }
-#pic1,#pic2,#pic3 ,#pic4, #pic5 ,#pic6 ,#pic7, #pic8, #pic9, #pic10
+#pic1,#pic2,#pic3 ,#pic4, #pic5
 { cursor: pointer; }
 .nullCursor{
   cursor: default !important;
@@ -17,20 +21,23 @@
   display: table-cell;
   vertical-align: middle;
 }
-#buttonId{
+#buttonId1{
+visibility: hidden;
+}
+/*#buttonId{
   position: relative;
   top: 50%;
   transform: translateY(-50%);
   float: right;
-}
-#mypara{
+}*/
+/*#mypara{
   position: relative;
   top: 50%;
   transform: translateY(-50%);
   float: left;
   font-size: 1.7em;
   font-weight: bold;
-}
+}*/
 
 /*.btn.btn-lg.btn-primary:disabled{
   background-color: green;

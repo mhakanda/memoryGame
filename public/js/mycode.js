@@ -1,4 +1,9 @@
 //sound, pic transition---------------------------------------------------------new code--
+var win = new Audio('audio/win.wav');
+var lose = new Audio('audio/lose.wav');
+// d.style.border = "thick solid #0000FF";
+// d.style.border = "thick solid red";
+// win.play();
 //randomInteger will create a random integer between mininteger and maxinteger, both inclusive
 randomInteger = function(mininteger,maxinteger){
   return Number(mininteger+Math.floor((Math.random() * (maxinteger+1-mininteger))));
@@ -60,7 +65,7 @@ for (k = 0;k<b;k++){
 myNewgame = function(){
 localStorage.clear();
 var allpics = ['1111','1112','1121','1122','1211','1212','1221','1222'];
-var coverPics = [1,2,3,4,5,6]
+var coverPics = [1,2,3,4]
 var dcover = samplingNonRepeat(coverPics,1);
 dcover = dcover.toString();
 var b = 6;//number of options
@@ -68,7 +73,7 @@ var c = samplingNonRepeat(allpics,3);
 c = c.concat(c)
 // console.log(c);
 c = samplingNonRepeat(c,6);
-console.log(c);
+// console.log(c);
 // document.getElementById("pic0").src = "pics/"+ c[0]+".png";
 // document.getElementById("pic1").src = "pics/"+ c[1]+".png";
 // document.getElementById("pic2").src = "pics/"+ c[2]+".png";
@@ -81,14 +86,23 @@ document.getElementById("pic2").src = "pics/"+ dcover+".jpg";
 document.getElementById("pic3").src = "pics/"+ dcover+".jpg";
 document.getElementById("pic4").src = "pics/"+ dcover+".jpg";
 document.getElementById("pic5").src = "pics/"+ dcover+".jpg";
+var picId = ['pic0','pic1','pic2','pic3','pic4','pic5']
+for (j in picId){
+document.getElementById(picId[j]).style.border = "none";}
+
 
 document.getElementById("mypara").innerHTML = "Game starts...";
+document.getElementById("buttonId1").style.visibility = "hidden";
 //-------------------------------------------------------------------
 localStorage.coverPic = dcover;
 localStorage.pics = c;
 localStorage.isCompleted = 0;//0 means middle of game, 1 means game over
 localStorage.state = [1,1,1,1,1,1];//active state of 6 positions, 1 means active
 localStorage.comparison = [];
+localStorage.button = 1;//button is hidden; 1 for hidden
+// comparison is is empty [] or some number such as [4]
+// it takes the previous one, or if matching occurs it is empty []
+// it initiates with []
 //localStorage.removeItem(picId);
 // var picId = ['pic0','pic1','pic2','pic3','pic4','pic5']
 // localStorage.picId = picId;
@@ -124,72 +138,111 @@ myFunction = function(){
   if (Number(localStorage.isCompleted)){
 myNewgame();}
 //console.log(localStorage);
-  };
+                        };
+//----------------------------------------
+myFunction1 = function(){
+  // // console.log(localStorage.d);
+  // d = localStorage.d;
+  // // d = JSON.parse(localStorage.d)
+  // d1 = localStorage.d1;
+  // console.log(typeof d);
+  // console.log(d1);
+  var d = document.getElementById("pic"+localStorage.d)
+  var d1 = document.getElementById("pic"+localStorage.d1)
+  d.src = "pics/"+ localStorage.coverPic+".jpg";
+  d1.src = "pics/"+ localStorage.coverPic+".jpg";
+  d.style.border = "none";
+  d1.style.border = "none";
+  document.getElementById("buttonId1").style.visibility = "hidden";
+  localStorage.button = 1;//button is hidden; 1 for hidden
+                         };
 
 //----------------------------------------
 comparisonAction = function(nuM){
+  // var cArray = localStorage.comparison
+  // cArray = JSON.parse("[" + cArray + "]");
+  // console.log(localStorage.isCompleted);
+  // console.log(localStorage.state);
+  // console.log(cArray);
   var isActive = JSON.parse("[" + localStorage.state + "]")[nuM];
-  if (isActive){
-    var d = document.getElementById("pic"+String(nuM))
+  var button = Number(localStorage.button);
+  // console.log(button);
+  // console.log(isActive && button);
+  if (isActive && button){
+    // it the pic is active, then only it works
+    var d = document.getElementById("pic"+String(nuM)) // get the clicked pic
+    // console.log(d);
     var cArray = localStorage.comparison
-    cArray = JSON.parse("[" + cArray + "]");
+    cArray = JSON.parse("[" + cArray + "]"); // get the earlier playing state
     if (cArray.length){
+    // it means there is some open pic before
     var d1 = document.getElementById("pic"+String(cArray[0]))
-    }
+    // get that pic now
+                      }
     // cArray = cArray.split(",")
-    console.log(cArray);
-    console.log(nuM);
-
-    var myPic = localStorage.pics
+    // console.log(cArray);
+    // console.log(nuM);
+    var myPic = localStorage.pics;
     // console.log(myPic);
     myPic = myPic.split(",")
     // console.log(myPic);
     // console.log(d);
     // console.log(cArray.length);
     if (cArray.length === 0){
-      d.src = "pics/"+ myPic[nuM]+".png";
-      localStorage.comparison = [nuM];
-    }
+        // it means there is nothing earlier open
+        // i.e either game just starts or a matching just occurs earlier
+        d.src = "pics/"+ myPic[nuM]+".png";
+        localStorage.comparison = [nuM];
+                            }
     else if (nuM !== cArray[0]) {
-              d.src = "pics/"+ myPic[nuM]+".png";
-              localStorage.comparison = [];
-              if (myPic[nuM]!== myPic[cArray[0]]){
-              //   sleep(9000);
-              //   d.src = "pics/"+ localStorage.coverPic+".jpg";
-              //  d1.src = "pics/"+ localStorage.coverPic+".jpg";
+        // it means user does not click the same pic as he did earlier
+        d.src = "pics/"+ myPic[nuM]+".png";
+        localStorage.comparison = [];
+        // matching or non-matching both case it is empty
+        if (myPic[nuM]!== myPic[cArray[0]]){
+            // non matching occurs
+            lose.play();
+            d.style.border = "thick solid red";
+            d1.style.border = "thick solid red";
+            document.getElementById("buttonId1").style.visibility = "visible";
+            localStorage.button = 0;
+            localStorage.d = nuM;
+            localStorage.d1 = cArray[0];
 
-                // sleep(4500).then(() => {
-                //                 // Do something after the sleep!
-                //                 d.src = "pics/"+ localStorage.coverPic+".jpg";
-                //                 d1.src = "pics/"+ localStorage.coverPic+".jpg";
-                //                       });
-                setTimeout(function()
-                          {
-                            d.src = "pics/"+ localStorage.coverPic+".jpg";
-                            d1.src = "pics/"+ localStorage.coverPic+".jpg";
-                          }, 700);
-
-                  console.log('hi');
-                }else {
-                      var temp = localStorage.state
-                      temp = JSON.parse("[" + temp + "]");
-                      temp[nuM] = 0 ;
-                      temp[cArray[0]] = 0;
-                      var sum = temp.reduce((a, b) => a + b, 0);
-                      if (sum === 0){
-                        localStorage.isCompleted = 1;// game over
-                        document.getElementById("mypara").innerHTML = "Game over...";
-                        document.getElementById("buttonId").classList.remove("disabled");
-                      }
-                      localStorage.state=temp;
-                      console.log('hii');
-                      }
-      // console.log('hello');
+                //  setTimeout(function()
+                //           {
+                //             d.src = "pics/"+ localStorage.coverPic+".jpg";
+                //             d1.src = "pics/"+ localStorage.coverPic+".jpg";
+                //           }, 700);
+                 //
+                //   console.log('hi');
+                                                }
+        else {    win.play();
+                  d.style.border = "thick solid #0000FF";
+                  d1.style.border = "thick solid #0000FF";
+                  var temp = localStorage.state
+                  temp = JSON.parse("[" + temp + "]");
+                  temp[nuM] = 0 ;
+                  temp[cArray[0]] = 0;
+                  var sum = temp.reduce((a, b) => a + b, 0);
+                  // sum of temp
+                  if (sum === 0){
+                      localStorage.isCompleted = 1;// game over
+                      document.getElementById("mypara").innerHTML = "Game over...";
+                      document.getElementById("buttonId").classList.remove("disabled");
+                                    }
+                  localStorage.state=temp;
+                  // console.log('hii');
+             }
     }
+    // var c1Array = localStorage.comparison
+    // c1Array = JSON.parse("[" + c1Array + "]");
+    // console.log(localStorage.isCompleted);
+    // console.log(localStorage.state);
+    // console.log(c1Array);
   }
-
-console.log(localStorage.comparison);
-console.log(localStorage.state);
+// console.log(localStorage.comparison);
+// console.log(localStorage.state);
 
   // if (Number(localStorage.state)){
   //   //console.log('Inside if');
