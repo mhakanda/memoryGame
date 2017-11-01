@@ -64,8 +64,9 @@ for (k = 0;k<b;k++){
 // Put the object into storage
 myNewgame = function(){
 localStorage.clear();
-var allpics = ['1111','1112','1121','1122','1211','1212','1221','1222'];
-var coverPics = [1,2,3,4]
+var allpics = ['111','112','121','122','211','212','221','222'];
+// var allpics = ['1111','1112','1121','1122','1211','1212','1221','1222'];
+var coverPics = [1,2,3]
 var dcover = samplingNonRepeat(coverPics,1);
 dcover = dcover.toString();
 var b = 6;//number of options
@@ -185,9 +186,11 @@ comparisonAction = function(nuM){
     var myPic = localStorage.pics;
     // console.log(myPic);
     myPic = myPic.split(",")
-    // console.log(myPic);
+    // console.log(myPic.length);
     // console.log(d);
     // console.log(cArray.length);
+    // var fv = "pics/"+ myPic[nuM]+".png";
+    // console.log(fv);
     if (cArray.length === 0){
         // it means there is nothing earlier open
         // i.e either game just starts or a matching just occurs earlier
